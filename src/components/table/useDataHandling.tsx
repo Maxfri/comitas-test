@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useAppDispatch } from 'store/hooks';
 import { ISorter, IFixed } from 'types/types';
 
-export interface UseDataHandlingProps<T> {
+export interface UseDataHandlingProps {
   getItems: () => void;
   resetFilters: () => void;
   handleRefresh: () => void;
@@ -11,7 +11,7 @@ export interface UseDataHandlingProps<T> {
   handlePageSizeChange: (pageSize: number) => void;
 }
 
-export const useDataHandling = <T extends unknown>(
+export const useDataHandling = (
   getItems: () => void,
   actions: {
     setSorters: ActionCreatorWithPayload<ISorter[], string>;
@@ -20,7 +20,7 @@ export const useDataHandling = <T extends unknown>(
     setPage: ActionCreatorWithPayload<number, string>;
     setPageSize: ActionCreatorWithPayload<number, string>;
   },
-): UseDataHandlingProps<T> => {
+): UseDataHandlingProps => {
   const dispatch = useAppDispatch();
 
   const resetFilters = () => {
