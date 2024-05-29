@@ -4,12 +4,9 @@ import { ColumnsType } from 'antd/es/table';
 import { IFixed } from 'types/types';
 
 //dependencies
-import React, { useEffect, useState } from 'react';
+import React, { ReactNode, useCallback, useEffect, useState } from 'react';
 import { Resizable } from 'react-resizable';
-import { Table as AntdTable} from 'antd';
-
-//components
-import Pagination from 'components/pagination/Pagination';
+import { Table as AntdTable } from 'antd';
 
 //constants
 import { TABLE_MIN_HEIGHT } from 'utils/constants';
@@ -56,19 +53,14 @@ const Table: React.FC<{
   loading?: boolean;
   dataSource: any;
   initColumns: ColumnsType<any>;
-  pagination?: {
-    total?: number;
-    page: number;
-    pageSize: number;
-    onChangePage: (page: number) => void;
-    onChangePageSize: (pageSize: number) => void;
-  };
+  pagination?: ReactNode;
   settings?: { hiddens: string[]; fixeds: IFixed[] };
 }> = ({ rowKey, loading, dataSource, initColumns, settings, pagination }) => {
   const [columns, setColumns] = useState<ColumnsType<any>>([]);
-  const [height, setHeight] = useState("0px");
+  const [height, setHeight] = useState('0px');
 
-  const onResize = (index: number) =>
+  const onResize =
+    (index: number) =>
     (e: React.SyntheticEvent<Element, Event>, { size }: ResizeCallbackData) => {
       const newColumns = [...columns];
 
@@ -81,7 +73,7 @@ const Table: React.FC<{
     };
 
   const resizedColumns: ColumnsType<any> = columns.map((col, index) => {
-    const fixedId = settings?.fixeds.findIndex(el => el.key === col.key);
+    const fixedId = settings?.fixeds.findIndex((el) => el.key === col.key);
     const isFixed = fixedId !== undefined && fixedId !== -1;
 
     return {
@@ -92,32 +84,29 @@ const Table: React.FC<{
         width: column.width,
         onResize: onResize(index) as React.ReactEventHandler<any>,
       }),
-    }
+    };
   });
 
-  const calculateTableHeight = () => {
+  const calculateTableHeight = useCallback(() => {
     const table = document.querySelector('.ant-table')?.getBoundingClientRect();
     const height = document.body.offsetHeight;
-
     if (table !== undefined) {
-      const tableHeight = height - table?.top - 120;
-
-      return tableHeight < TABLE_MIN_HEIGHT ? TABLE_MIN_HEIGHT + "px" : tableHeight + "px";
-    } else {
-      return TABLE_MIN_HEIGHT + "px";
-    };
-  };
-
-  useEffect(() => {
-    setHeight(calculateTableHeight);
+      const tableHeight = height - table.top - 120;
+      return tableHeight < TABLE_MIN_HEIGHT ? `${TABLE_MIN_HEIGHT}px` : `${tableHeight}px`;
+    }
+    return `${TABLE_MIN_HEIGHT}px`;
   }, []);
 
   useEffect(() => {
+    setHeight(calculateTableHeight);
+  }, [calculateTableHeight]);
+
+  useEffect(() => {
     setColumns(initColumns);
-  }, [initColumns])
+  }, [initColumns]);
 
   return (
-    <div className={style.wrapper} >
+    <div className={style.wrapper}>
       <AntdTable
         bordered
         showHeader
@@ -134,20 +123,11 @@ const Table: React.FC<{
         }}
         scroll={{
           x: 'calc(100vw - 300px)',
-          y: `calc(${height} - 64px)`
+          y: `calc(${height} - 64px)`,
         }}
-        style={{ height, minHeight: TABLE_MIN_HEIGHT + "px" }}
+        style={{ height, minHeight: TABLE_MIN_HEIGHT + 'px' }}
       />
-      {
-        !!pagination &&
-        <Pagination
-          total={pagination.total}
-          page={pagination.page}
-          pageSize={pagination.pageSize}
-          onChangePage={pagination.onChangePage}
-          onChangePageSize={pagination.onChangePageSize}
-        />
-      }
+      {pagination}
     </div>
   );
 };

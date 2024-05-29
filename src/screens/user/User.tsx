@@ -4,6 +4,7 @@ import style from 'style/Wrapper.module.scss';
 //components
 import Table from 'components/table/Table';
 import { RefreshButton } from 'components/refreshButton';
+import Pagination from 'components/pagination/Pagination';
 
 //config
 import { getColumns, useUserDataHandling, useUserSettings, useUserValues } from './config';
@@ -31,13 +32,15 @@ const User: React.FC = () => {
         dataSource={data}
         initColumns={columns}
         settings={{ hiddens, fixeds }}
-        pagination={{
-          total,
-          page,
-          pageSize,
-          onChangePage: handlePageChange,
-          onChangePageSize: handlePageSizeChange,
-        }}
+        pagination={
+          <Pagination
+            total={total}
+            page={page}
+            pageSize={pageSize}
+            onChangePage={handlePageChange}
+            onChangePageSize={handlePageSizeChange}
+          />
+        }
       />
     </div>
   );
