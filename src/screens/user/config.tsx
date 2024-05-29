@@ -43,11 +43,11 @@ export const getColumns = (settings: ITitleSettings): ColumnsType<IUserItem> => 
   },
 ];
 
-export const useUserDataHandling = (): UseDataHandlingProps<IUserItem> => {
+export const useUserDataHandling = (): UseDataHandlingProps => {
   const dispatch = useAppDispatch();
 
   const { getItems, resetFilters, handleRefresh, handlePageChange, handlePageSizeChange } =
-    useDataHandling<IUserItem>(() => dispatch(getUser()), {
+    useDataHandling(() => dispatch(getUser()), {
       setSorters,
       setHiddens,
       setFixeds,

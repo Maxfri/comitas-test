@@ -1,5 +1,5 @@
 import { ActionCreatorWithPayload } from '@reduxjs/toolkit';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useAppDispatch } from 'store/hooks';
 import { ISorter, IFixed } from 'types/types';
 
@@ -23,31 +23,37 @@ export const useDataHandling = (
 ): UseDataHandlingProps => {
   const dispatch = useAppDispatch();
 
-  const resetFilters = () => {
+  const resetFilters = useCallback(() => {
     dispatch(actions.setSorters([]));
     dispatch(actions.setHiddens([]));
     dispatch(actions.setFixeds([]));
-  };
+  }, [dispatch, actions]);
 
-  const handleRefresh = () => {
+  const handleRefresh = useCallback(() => {
     resetFilters();
     getItems();
-  };
+  }, [getItems, resetFilters]);
 
-  const handlePageChange = (page: number) => {
-    dispatch(actions.setPage(page));
-    handleRefresh();
-  };
+  const handlePageChange = useCallback(
+    (page: number) => {
+      dispatch(actions.setPage(page));
+      handleRefresh();
+    },
+    [dispatch, actions, handleRefresh],
+  );
 
-  const handlePageSizeChange = (pageSize: number) => {
-    dispatch(actions.setPageSize(pageSize));
-    handleRefresh();
-  };
+  const handlePageSizeChange = useCallback(
+    (pageSize: number) => {
+      dispatch(actions.setPageSize(pageSize));
+      handleRefresh();
+    },
+    [dispatch, actions, handleRefresh],
+  );
 
   useEffect(() => {
     resetFilters();
     getItems();
-  }, [dispatch]);
+  }, []);
 
   return {
     getItems,

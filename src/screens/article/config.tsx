@@ -124,11 +124,11 @@ export function useArticleValues() {
   return useValues((state: RootState) => state.article);
 }
 
-export const useArticleDataHandling = (): UseDataHandlingProps<IArticleItem> => {
+export const useArticleDataHandling = (): UseDataHandlingProps => {
   const dispatch = useAppDispatch();
 
   const { getItems, resetFilters, handleRefresh, handlePageChange, handlePageSizeChange } =
-    useDataHandling<IArticleItem>(() => dispatch(getArticle()), {
+    useDataHandling(() => dispatch(getArticle()), {
       setSorters,
       setHiddens,
       setFixeds,
